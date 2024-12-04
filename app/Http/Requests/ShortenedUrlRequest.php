@@ -6,6 +6,18 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+
+
+/**
+ * @OA\Schema(
+ *     schema="ShortenedUrlRequest",
+ *     type="object",
+ *     title="ShortenedUrlRequest",
+ *     description="Create shortened URL request schema",
+ *     required={"original_url"},
+ *     @OA\Property(property="original_url", type="string", format="url", example="https://laravel.com/")
+ * )
+ */
 class ShortenedUrlRequest extends FormRequest
 {
     /**
@@ -40,6 +52,7 @@ class ShortenedUrlRequest extends FormRequest
     {
         throw new HttpResponseException(
             response()->json([
+                'success' => false,
                 'message' => 'El URL original no es válido',
                 'errors' => $validator->errors()
             ], 422)

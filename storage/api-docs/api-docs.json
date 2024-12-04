@@ -1,0 +1,373 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Url Shortener - Laravel REST API",
+        "description": "Url Shortener API Documentation",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/"
+        }
+    ],
+    "paths": {
+        "/api/shortened-urls": {
+            "get": {
+                "tags": [
+                    "Shortened URL's"
+                ],
+                "summary": "List all shortened URL's",
+                "operationId": "2ef5f16589efdd0a8ef473783fb9f0c1",
+                "responses": {
+                    "200": {
+                        "description": "Shortened URL's retrieved succesfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ShortenedUrl"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Shortened URL's"
+                ],
+                "summary": "Create a shortened URL",
+                "operationId": "e33824ab2aed8726ae5866ca82b14758",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ShortenedUrlRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Shortened URL created succesfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShortenedUrl"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Original URL validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El URL original no es válido"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "original_url": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El URL original no tiene el formato correcto"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Shortened URL creation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error crear el URL acortado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/shortened-urls/{code}": {
+            "get": {
+                "tags": [
+                    "Shortened URL's"
+                ],
+                "summary": "Get original URL by code",
+                "operationId": "eb412cdeabba3b54af980a6e83adef40",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "Unique code assigned to URL",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "e817a"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Original URL retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "format": "url",
+                                            "example": "https://laravel.com/"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Original URL not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se ha encontrado el URL"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/shortened-urls/{id}": {
+            "delete": {
+                "tags": [
+                    "Shortened URL's"
+                ],
+                "summary": "Delete shortened URL by id",
+                "operationId": "bbe3b2015878d47f2f472f43108cdde5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the shortened URL",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shortened URL deleted succesfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "URL acortado eliminado con éxito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Shortened URL not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "URL acortado no existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "ID validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El ID no es válido"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "El ID debe ser numérico"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Shortened URL deletion failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al eliminar URL acortado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ShortenedUrlRequest": {
+                "title": "ShortenedUrlRequest",
+                "description": "Create shortened URL request schema",
+                "required": [
+                    "original_url"
+                ],
+                "properties": {
+                    "original_url": {
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://laravel.com/"
+                    }
+                },
+                "type": "object"
+            },
+            "ShortenedUrl": {
+                "title": "ShortenedUrl",
+                "description": "Shortened URL model schema",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "code": {
+                        "description": "URL encrypted into a unique code",
+                        "type": "string",
+                        "example": "e1is8a"
+                    },
+                    "original_url": {
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://laravel.com/"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-03T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-03T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Shortened URL's",
+            "description": "Shortened URL's"
+        }
+    ]
+}

@@ -3,9 +3,10 @@
 
 namespace App\Services;
 
-
+use App\Models\ShortenedUrl;
 use App\Repositories\Interfaces\ShortenedUrlRepositoryInterface;
 use App\Traits\UrlHasher;
+use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ShortenedUrlService
@@ -14,13 +15,24 @@ class ShortenedUrlService
 
     public function __construct(protected ShortenedUrlRepositoryInterface $shortenedUrlRepository) {}
 
-    public function list()
+    /** 
+     * 
+     * @return Collection
+     * 
+     */
+    public function list(): Collection
     {
 
         return $this->shortenedUrlRepository->list();
     }
 
-    public function shortUrl($payload)
+    /** 
+     * 
+     * @param array $payload
+     * @return ShortenedUrl
+     * 
+     */
+    public function shortUrl(array $payload): ShortenedUrl
     {
 
         $original_url = $payload['original_url'];
@@ -33,13 +45,19 @@ class ShortenedUrlService
         $createdShortenedUrl = $this->shortenedUrlRepository->create($code, $original_url);
 
         if (!$createdShortenedUrl) {
-            throw new HttpException(500, 'Error al crear el url acortado');
+            throw new HttpException(500, 'Error al crear el URL acortado');
         }
 
         return $createdShortenedUrl;
     }
 
-    public function delete($id)
+    /** 
+     * 
+     * @param int $id
+     * @return bool
+     * 
+     */
+    public function delete(int $id): bool
     {
         $currentShortenedUrl = $this->shortenedUrlRepository->findById($id);
 
@@ -50,13 +68,19 @@ class ShortenedUrlService
         $deletedShortenedUrl = $currentShortenedUrl->delete();
 
         if (!$deletedShortenedUrl) {
-            throw new HttpException(500, 'Error al eliminar url acortado');
+            throw new HttpException(500, 'Error al eliminar URL acortado');
         }
 
         return $deletedShortenedUrl;
     }
 
-    public function getOriginalUrl($code)
+    /** 
+     * 
+     * @param string $code
+     * @return string
+     * 
+     */
+    public function getOriginalUrl(string $code): string
     {
         $shortenedUrlObject = $this->shortenedUrlRepository->findByCode($code);
         if (!$shortenedUrlObject) {

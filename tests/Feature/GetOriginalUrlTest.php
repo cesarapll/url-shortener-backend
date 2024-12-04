@@ -2,41 +2,40 @@
 
 use App\Models\ShortenedUrl;
 use App\Repositories\ShortenedUrlRepository;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class GetOriginalUrlTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
+    protected $shortenedUrl;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->shortenedUrl = ShortenedUrl::factory()->create(['original_url' => 'https://laravel.com/', 'code' => 'a43sd5']);
+    }
+
     public function test_the_application_get_original_url_by_code()
     {
 
-        $mockedShortenedUrl = ShortenedUrl::factory()->create(['original_url' => 'https://laravel.com/', 'code' => 'e16cf']);
-
-        $repositoryMock = Mockery::mock(ShortenedUrlRepository::class);
-
-        $repositoryMock->shouldReceive('findByCode')
-            ->andReturn($mockedShortenedUrl);
-
-        $this->app->instance(ShortenedUrlRepository::class, $repositoryMock);
-
-        $response = $this->getJson('/api/shortened-urls/e16cf');
+        $response = $this->getJson('/api/shortened-urls/' . $this->shortenedUrl->code);
 
         $responseData = $response->json();
-        $this->assertEquals($responseData['data'], "https://laravel.com/");
+        $response->assertJsonStructure([
+            'success',
+            'data'
+        ]);
+        $this->assertEquals($responseData['data'],  $this->shortenedUrl->original_url);
         $response->assertStatus(200);
     }
 
-    public function test_the_application_respond_not_found_code_404()
+    public function test_the_application_return_not_found_error()
     {
-        $mockedRepositoryData = null;
 
-        $repositoryMock = Mockery::mock(ShortenedUrlRepository::class);
-
-        $repositoryMock->shouldReceive('findByCode')
-            ->andReturn($mockedRepositoryData);
-
-        $this->app->instance(ShortenedUrlRepository::class, $repositoryMock);
-
-        $response = $this->getJson('/api/shortened-urls/e16cf');
+        $response = $this->getJson('/api/shortened-urls/a');
 
         $responseData = $response->json();
 

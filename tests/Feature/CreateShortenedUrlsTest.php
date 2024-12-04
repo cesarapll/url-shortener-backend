@@ -6,28 +6,17 @@ use App\Models\ShortenedUrl;
 use App\Repositories\ShortenedUrlRepository;
 use Mockery;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+
+
 
 class CreateShortenedUrlsTest extends TestCase
 {
 
+    use DatabaseTransactions;
+
     public function test_the_application_create_shortened_urls_if_another_url_exists_with_code()
     {
-
-        $mockedShortenedUrl = ShortenedUrl::factory()->create(['original_url' => 'https://laravel.com/', 'code' => 'e16cf']);
-
-        $repositoryMock = Mockery::mock(ShortenedUrlRepository::class);
-
-        // Force first call returns a value
-        $repositoryMock->shouldReceive('findByCode')
-            ->andReturn($mockedShortenedUrl, []);
-
-        $repositoryMock->shouldReceive('create')
-            ->andReturnUsing(function ($code, $original_url) {
-                return ShortenedUrl::factory()->create(['original_url' => $original_url, 'code' => $code]);;
-            });
-
-
-        $this->app->instance(ShortenedUrlRepository::class, $repositoryMock);
 
         $response = $this->json('POST', '/api/shortened-urls', [
             'original_url' =>  'https://laravel.com/'
@@ -37,11 +26,22 @@ class CreateShortenedUrlsTest extends TestCase
 
         $this->assertNotNull($responseData['data']['code']);
         $this->assertNotEmpty($responseData['data']['code']);
+        $this->assertEquals(true, $responseData['success']);
         $this->assertEquals('https://laravel.com/', $responseData['data']['original_url']);
+        $response->assertJsonStructure([
+            'success',
+            'data' => [
+                'id',
+                'code',
+                'original_url',
+                'created_at',
+                'updated_at'
+            ]
+        ]);
         $response->assertStatus(201);
     }
 
-    public function test_the_application_respond_with_error_on_empty_url()
+    public function test_the_application_return_validation_error_on_empty_url()
     {
         $response = $this->json('POST', '/api/shortened-urls', [
             'original_url' =>  ''
@@ -52,6 +52,7 @@ class CreateShortenedUrlsTest extends TestCase
         $errors = $responseData['errors'];
         $message = $responseData['message'];
 
+        $this->assertEquals(false, $responseData['success']);
         $this->assertNotEmpty($message);
         $this->assertEquals('El URL original no es válido', $message);
         $this->assertNotEmpty($errors);
@@ -60,9 +61,9 @@ class CreateShortenedUrlsTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_the_application_respond_with_error_on_incorrect_url_format()
+    public function test_the_application_return_validation_error_on_incorrect_url_format()
     {
-        $response = $this->json('POST', '/api/shortened-urls', [
+        $response = $this->post('/api/shortened-urls', [
             'original_url' =>  'asdg412/%'
         ]);
 
@@ -71,6 +72,7 @@ class CreateShortenedUrlsTest extends TestCase
         $errors = $responseData['errors'];
         $message = $responseData['message'];
 
+        $this->assertEquals(false, $responseData['success']);
         $this->assertNotEmpty($message);
         $this->assertEquals('El URL original no es válido', $message);
         $this->assertNotEmpty($errors);

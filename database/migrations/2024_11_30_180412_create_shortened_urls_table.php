@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shortened_urls', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 8);
+            $table->string('code', 8)->unique();
             $table->string('original_url', 400);
             $table->timestamps();
         });
