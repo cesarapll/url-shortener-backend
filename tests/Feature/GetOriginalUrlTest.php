@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\ShortenedUrl;
-use App\Repositories\ShortenedUrlRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
