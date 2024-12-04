@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\ShortenedUrl;
-use App\Repositories\ShortenedUrlRepository;
-use Mockery;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
