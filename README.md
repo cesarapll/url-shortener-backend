@@ -27,7 +27,7 @@ REST API para acortar URL's
 
 *   Ejecutar el comando `php artisan serve --env=local` para empezar a usar el API con algún cliente (Ejm: Postman).
 
-*   Nota: Asimismo, se puede entrar a la documentación del API en Swagger a través de la ruta: http://localhost:8000/api/documentation
+*   Nota: Asimismo, se puede entrar a la documentación del API en Swagger a través de la ruta local: http://localhost:8000/api/documentation
 
 ## Ejecución de pruebas locales
 
