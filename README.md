@@ -43,3 +43,5 @@ REST API para acortar URL's
 *   Se tiene que configurar el entorno de AWS CLI, por lo que primero se debe instalar y configurar de acuerdo a su documentación oficial (https://docs.aws.amazon.com/es_es/cli/latest/userguide/getting-started-install.html).
 
 -   Ejecutar el comando `serverless deploy --stage=testing` para el entorno de _testing_ o `serverless deploy --stage=production` para _production_.
+
+*   Nota adicional: Actualizar el CORS con la URL generada para la aplicación FRONTEND.

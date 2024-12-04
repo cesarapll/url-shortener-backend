@@ -13,7 +13,7 @@ return [
 
     'defaults' => [
         'supports_credentials' => false,
-        'allowed_origins' => ['http://localhost:5173'],
+        'allowed_origins' => ['http://localhost:5173', 'https://url-shortener-af159.web.app/'],
         'allowed_headers' => ['*'],
         'allowed_methods' => ['*'],
         'exposed_headers' => [],
