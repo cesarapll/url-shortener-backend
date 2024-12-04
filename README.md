@@ -29,6 +29,8 @@ REST API para acortar URL's
 
 *   Nota: Asimismo, se puede entrar a la documentación del API en Swagger a través de la ruta local: http://localhost:8000/api/documentation
 
+![image](https://github.com/user-attachments/assets/0d713ce5-75f9-44e7-be72-a6bb7dd76339)
+
 ## Ejecución de pruebas locales
 
 -   Ejecutar el comando `composer run test:local`
